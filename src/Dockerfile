@@ -1,16 +1,23 @@
-FROM ubuntu:latest AS build
+# Etapa de construção - Build stage
+FROM maven:3.8.6-openjdk-17 AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
+# Definir diretório de trabalho dentro do contêiner
+WORKDIR /app
+
+# Copiar todos os arquivos do projeto para o contêiner
 COPY . .
 
-RUN apt-get install maven -y
+# Rodar o Maven para construir o projeto
 RUN mvn clean install
 
-FROM openjdk:17-jdk
+# Etapa de execução - Run stage
+FROM openjdk:17-jdk-slim
 
+# Expor a porta 8080
 EXPOSE 8080
 
-COPY --from=build /target/deploy_render-1.0.0.jar app.jar
+# Copiar o arquivo JAR gerado da etapa de build
+COPY --from=build /app/target/deploy_render-1.0.0.jar /app/app.jar
 
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+# Definir o comando para rodar o JAR
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
