@@ -11,7 +11,7 @@ COPY . .
 RUN mvn clean install
 
 # Etapa de execução - Run stage
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-buster
 
 # Expor a porta 8080
 EXPOSE 8080
