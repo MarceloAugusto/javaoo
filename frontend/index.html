@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login – Sistema CRUD</title>
+
+        <style>
+        body {
+            font-family: Arial;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #004fcc;
+        }
+
+        .switch {
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: #0066ff;
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <div class="container">
+
+            <!-- LOGIN -->
+            <div id="loginBox">
+                <h2>Entrar</h2>
+                <input id="loginEmail" placeholder="E-mail">
+                <input id="loginSenha" type="password" placeholder="Senha">
+                <button onclick="login()">Entrar</button>
+                <p id="loginMsg"></p>
+
+                <div class="switch" onclick="mostrarRegistro()">Criar uma
+                    conta</div>
+            </div>
+
+            <!-- REGISTRO -->
+            <div id="registroBox" style="display:none;">
+                <h2>Criar Conta</h2>
+                <input id="regNome" placeholder="Nome completo">
+                <input id="regEmail" placeholder="E-mail">
+                <input id="regSenha" type="password" placeholder="Senha">
+                <button onclick="registrar()">Registrar</button>
+                <p id="regMsg"></p>
+
+                <div class="switch" onclick="mostrarLogin()">Já tenho
+                    conta</div>
+            </div>
+
+        </div>
+
+        <script>
+    const API = "http://localhost:8081/api";
+
+    // Trocar telas
+    function mostrarRegistro() {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("registroBox").style.display = "block";
+    }
+
+    function mostrarLogin() {
+        document.getElementById("loginBox").style.display = "block";
+        document.getElementById("registroBox").style.display = "none";
+    }
+
+    // LOGIN
+    function login() {
+        const data = {
+            email: loginEmail.value,
+            senha: loginSenha.value
+        };
+
+        fetch(API + "/usuarios/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.text())
+        .then(msg => {
+            loginMsg.innerText = msg;
+
+            if (msg.includes("sucesso")) {
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";  // Página após login
+                }, 800);
+            }
+        });
+    }
+
+    // REGISTRO
+    function registrar() {
+        const data = {
+            nome: regNome.value,
+            email: regEmail.value,
+            senha: regSenha.value
+        };
+
+        fetch(API + "/usuarios", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(() => {
+            regMsg.innerText = "Conta criada com sucesso!";
+            setTimeout(() => mostrarLogin(), 1000);
+        });
+    }
+</script>
+
+    </body>
+</html>

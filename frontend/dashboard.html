@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dashboard – Sistema CRUD</title>
+
+        <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #0066ff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        header button {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        nav button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        nav button.active {
+            background: #0066ff;
+            color: white;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        input, select {
+            padding: 8px;
+            width: 300px;
+            margin: 5px 0;
+        }
+
+        button.action {
+            padding: 8px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .btn-warning { background: #ffaa00; }
+        .btn-danger { background: #ff4444; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        img.foto-mini {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 350px;
+            border-radius: 10px;
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <header>
+            <h1>Painel de Controle</h1>
+            <button onclick="logout()">Sair</button>
+        </header>
+
+        <div class="container">
+
+            <!-- MENU -->
+            <nav>
+                <button id="btnCategorias" class="active"
+                    onclick="mostrar('categorias')">Categorias</button>
+                <button id="btnProdutos"
+                    onclick="mostrar('produtos')">Produtos</button>
+                <button id="btnUsuarios"
+                    onclick="mostrar('usuarios')">Usuários</button>
+            </nav>
+
+            <!-- ============================= -->
+            <!-- CATEGORIAS -->
+            <!-- ============================= -->
+            <div id="categorias" class="box">
+                <h2>Gerenciar Categorias</h2>
+
+                <input id="catNome" placeholder="Nome da categoria"><br>
+                <button class="action" onclick="criarCategoria()">Cadastrar
+                    Categoria</button>
+
+                <h3>Lista de Categorias</h3>
+                <button class="action" onclick="listarCategorias()">Atualizar
+                    Lista</button>
+
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Nome</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="listaCategorias"></tbody>
+                </table>
+            </div>
+
+            <!-- ============================= -->
+            <!-- PRODUTOS -->
+            <!-- ============================= -->
+            <div id="produtos" class="box" style="display:none;">
+                <h2>Gerenciar Produtos</h2>
+
+                <input id="prodNome" placeholder="Nome"><br>
+                <input id="prodDesc" placeholder="Descrição"><br>
+                <input id="prodPreco" type="number" step="0.01"
+                    placeholder="Preço"><br>
+                <input id="prodEstoque" type="number" placeholder="Estoque"><br>
+                <select id="prodCategoria"></select><br>
+
+                <button class="action" onclick="criarProduto()">Cadastrar
+                    Produto</button>
+
+                <h3>Lista de Produtos</h3>
+                <button class="action" onclick="listarProdutos()">Atualizar
+                    Lista</button>
+
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Nome</th><th>Preço</th><th>Categoria</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="listaProdutos"></tbody>
+                </table>
+            </div>
+
+            <!-- ============================= -->
+            <!-- USUÁRIOS -->
+            <!-- ============================= -->
+            <div id="usuarios" class="box" style="display:none;">
+                <h2>Gerenciar Usuários</h2>
+
+                <input id="userNome" placeholder="Nome"><br>
+                <input id="userEmail" placeholder="Email"><br>
+                <input id="userSenha" type="password" placeholder="Senha"><br>
+                <input id="userFoto" type="file"><br>
+
+                <button class="action" onclick="criarUsuario()">Cadastrar
+                    Usuário</button>
+
+                <h3>Lista de Usuários</h3>
+                <button class="action" onclick="listarUsuarios()">Atualizar
+                    Lista</button>
+
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Nome</th><th>Email</th><th>Foto</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="listaUsuarios"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- MODAL EDITAR CATEGORIA -->
+        <div id="modalCategoria" class="modal">
+            <div class="modal-content">
+                <h3>Editar Categoria</h3>
+                <input id="editCatNome">
+                <button class="action btn-warning"
+                    onclick="salvarEdicaoCategoria()">Salvar</button>
+                <button class="action btn-danger"
+                    onclick="fecharModalCategoria()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR PRODUTO -->
+        <div id="modalProduto" class="modal">
+            <div class="modal-content">
+                <h3>Editar Produto</h3>
+                <input id="editProdNome"><br>
+                <input id="editProdDesc"><br>
+                <input id="editProdPreco" type="number" step="0.01"><br>
+                <input id="editProdEstoque" type="number"><br>
+                <select id="editProdCategoria"></select><br>
+
+                <button class="action btn-warning"
+                    onclick="salvarEdicaoProduto()">Salvar</button>
+                <button class="action btn-danger"
+                    onclick="fecharModalProduto()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR USUÁRIO -->
+        <div id="modalUsuario" class="modal">
+            <div class="modal-content">
+                <h3>Editar Usuário</h3>
+                <input id="editUserNome"><br>
+                <input id="editUserEmail"><br>
+                <input id="editUserSenha" type="password"><br>
+                <input id="editUserFoto" type="file"><br>
+
+                <button class="action btn-warning"
+                    onclick="salvarEdicaoUsuario()">Salvar</button>
+                <button class="action btn-danger"
+                    onclick="fecharModalUsuario()">Cancelar</button>
+            </div>
+        </div>
+
+        <script>
+
+const API = "http://localhost:8081/api";
+
+// ================================
+// Controle de seções
+// ================================
+function mostrar(secao) {
+    document.getElementById("categorias").style.display = secao === "categorias" ? "block" : "none";
+    document.getElementById("produtos").style.display = secao === "produtos" ? "block" : "none";
+    document.getElementById("usuarios").style.display = secao === "usuarios" ? "block" : "none";
+
+    btnCategorias.classList.toggle("active", secao === "categorias");
+    btnProdutos.classList.toggle("active", secao === "produtos");
+    btnUsuarios.classList.toggle("active", secao === "usuarios");
+}
+
+// ================================
+// Logout
+// ================================
+function logout() {
+    window.location.href = "index.html";
+}
+
+// ================================
+// Categorias
+// ================================
+let categoriaEditandoID = null;
+
+function criarCategoria() {
+    fetch(API + "/categorias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome: catNome.value })
+    }).then(() => listarCategorias());
+}
+
+function listarCategorias() {
+    fetch(API + "/categorias")
+        .then(res => res.json())
+        .then(lista => {
+            listaCategorias.innerHTML = "";
+            lista.forEach(c => {
+                listaCategorias.innerHTML += `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.nome}</td>
+                    <td>
+                        <button class="btn-warning action" onclick="abrirModalCategoria(${c.id}, '${c.nome}')">Editar</button>
+                        <button class="btn-danger action" onclick="excluirCategoria(${c.id})">Excluir</button>
+                    </td>
+                </tr>`;
+            });
+        });
+}
+
+function abrirModalCategoria(id, nome) {
+    categoriaEditandoID = id;
+    editCatNome.value = nome;
+    modalCategoria.style.display = "flex";
+}
+
+function salvarEdicaoCategoria() {
+    fetch(API + "/categorias/" + categoriaEditandoID, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome: editCatNome.value })
+    }).then(() => {
+        fecharModalCategoria();
+        listarCategorias();
+    });
+}
+
+function fecharModalCategoria() {
+    modalCategoria.style.display = "none";
+}
+
+function excluirCategoria(id) {
+    if (confirm("Excluir categoria?"))
+        fetch(API + "/categorias/" + id, { method: "DELETE" })
+        .then(() => listarCategorias());
+}
+
+// ================================
+// Produtos
+// ================================
+let produtoEditandoID = null;
+
+function criarProduto() {
+    const data = {
+        nome: prodNome.value,
+        descricao: prodDesc.value,
+        preco: parseFloat(prodPreco.value),
+        estoque: parseInt(prodEstoque.value),
+        categoria: { id: Number(prodCategoria.value) }
+    };
+
+    fetch(API + "/produtos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    }).then(() => listarProdutos());
+}
+
+function listarProdutos() {
+    fetch(API + "/produtos")
+        .then(res => res.json())
+        .then(lista => {
+            listaProdutos.innerHTML = "";
+            lista.forEach(p => {
+                listaProdutos.innerHTML += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.nome}</td>
+                    <td>${p.preco}</td>
+                    <td>${p.categoria?.nome ?? "Sem categoria"}</td>
+                    <td>
+                        <button class="btn-warning action" onclick="abrirModalProduto(${p.id})">Editar</button>
+                        <button class="btn-danger action" onclick="excluirProduto(${p.id})">Excluir</button>
+                    </td>
+                </tr>`;
+            });
+        });
+}
+
+function excluirProduto(id) {
+    if (confirm("Excluir produto?"))
+        fetch(API + "/produtos/" + id, { method: "DELETE" })
+            .then(() => listarProdutos());
+}
+
+function abrirModalProduto(id) {
+    produtoEditandoID = id;
+
+    fetch(API + "/produtos/" + id)
+        .then(res => res.json())
+        .then(p => {
+            editProdNome.value = p.nome;
+            editProdDesc.value = p.descricao;
+            editProdPreco.value = p.preco;
+            editProdEstoque.value = p.estoque;
+            carregarCategoriasNoSelectEdit(p.categoria?.id);
+            modalProduto.style.display = "flex";
+        });
+}
+
+function carregarCategoriasNoSelectEdit(selectedId) {
+    fetch(API + "/categorias")
+        .then(res => res.json())
+        .then(lista => {
+            editProdCategoria.innerHTML = "";
+            lista.forEach(c => {
+                editProdCategoria.innerHTML += `
+                <option value="${c.id}" ${selectedId == c.id ? "selected" : ""}>${c.nome}</option>`;
+            });
+        });
+}
+
+function salvarEdicaoProduto() {
+    const data = {
+        nome: editProdNome.value,
+        descricao: editProdDesc.value,
+        preco: parseFloat(editProdPreco.value),
+        estoque: parseInt(editProdEstoque.value),
+        categoria: { id: Number(editProdCategoria.value) }
+    };
+
+    fetch(API + "/produtos/" + produtoEditandoID, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    }).then(() => {
+        fecharModalProduto();
+        listarProdutos();
+    });
+}
+
+function fecharModalProduto() {
+    modalProduto.style.display = "none";
+}
+
+function carregarCategoriasNoSelect() {
+    fetch(API + "/categorias")
+        .then(res => res.json())
+        .then(lista => {
+            prodCategoria.innerHTML = "";
+            lista.forEach(c => {
+                prodCategoria.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+            });
+        });
+}
+
+// ================================
+// USUÁRIOS
+// ================================
+let usuarioEditandoID = null;
+
+function criarUsuario() {
+    const data = {
+        nome: userNome.value,
+        email: userEmail.value,
+        senha: userSenha.value
+    };
+
+    fetch(API + "/usuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(usuario => {
+        if (userFoto.files.length > 0) {
+            const fd = new FormData();
+            fd.append("foto", userFoto.files[0]);
+
+            fetch(API + "/usuarios/" + usuario.id + "/upload-foto", {
+                method: "POST",
+                body: fd
+            }).then(() => listarUsuarios());
+        } else {
+            listarUsuarios();
+        }
+    });
+}
+
+function listarUsuarios() {
+    fetch(API + "/usuarios")
+        .then(res => res.json())
+        .then(lista => {
+            listaUsuarios.innerHTML = "";
+            lista.forEach(u => {
+                listaUsuarios.innerHTML += `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nome}</td>
+                    <td>${u.email}</td>
+                    <td>${u.fotoPerfil ?
+                        `<img class='foto-mini' src="http://localhost:8081${u.fotoPerfil}">` :
+                        "Sem foto"}</td>
+                    <td>
+                        <button class="btn-warning action" onclick="abrirModalUsuario(${u.id})">Editar</button>
+                        <button class="btn-danger action" onclick="excluirUsuario(${u.id})">Excluir</button>
+                    </td>
+                </tr>`;
+            });
+        });
+}
+
+function abrirModalUsuario(id) {
+    usuarioEditandoID = id;
+
+    fetch(API + "/usuarios/" + id)
+        .then(res => res.json())
+        .then(u => {
+            editUserNome.value = u.nome;
+            editUserEmail.value = u.email;
+            editUserSenha.value = u.senha;
+
+            modalUsuario.style.display = "flex";
+        });
+}
+
+function salvarEdicaoUsuario() {
+    const data = {
+        nome: editUserNome.value,
+        email: editUserEmail.value,
+        senha: editUserSenha.value
+    };
+
+    fetch(API + "/usuarios/" + usuarioEditandoID, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        if (editUserFoto.files.length > 0) {
+            const fd = new FormData();
+            fd.append("foto", editUserFoto.files[0]);
+
+            fetch(API + "/usuarios/" + usuarioEditandoID + "/upload-foto", {
+                method: "POST",
+                body: fd
+            }).then(() => {
+                fecharModalUsuario();
+                listarUsuarios();
+            });
+        } else {
+            fecharModalUsuario();
+            listarUsuarios();
+        }
+    });
+}
+
+function excluirUsuario(id) {
+    if (confirm("Excluir usuário?"))
+        fetch(API + "/usuarios/" + id, { method: "DELETE" })
+            .then(() => listarUsuarios());
+}
+
+function fecharModalUsuario() {
+    modalUsuario.style.display = "none";
+}
+
+// ================================
+// Iniciar carregando tudo
+// ================================
+listarCategorias();
+listarProdutos();
+listarUsuarios();
+carregarCategoriasNoSelect();
+
+</script>
+
+    </body>
+</html>

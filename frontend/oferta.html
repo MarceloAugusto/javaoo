@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>AgroTech – Ofertas de Tratores</title>
+
+        <!-- TAILWIND CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- SWIPER (CARROSSEL) -->
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+        <script
+            src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+        <style>
+        body {
+            background: #eef3ed;
+        }
+
+        .card-hover:hover {
+            transform: scale(1.03);
+            transition: 0.2s;
+        }
+
+        .detalhes-panel {
+            transition: all 0.4s ease-in-out;
+        }
+    </style>
+    </head>
+
+    <body class="text-gray-800">
+
+        <!-- ========================= HEADER ========================= -->
+        <header class="bg-green-800 text-white p-6 shadow-lg">
+            <h1
+                class="text-3xl font-bold text-center flex items-center justify-center gap-2">
+                🚜 AgroTech Brasil – Ofertas de Tratores
+            </h1>
+        </header>
+
+        <!-- ========================= CONTAINER ========================= -->
+        <div class="max-w-7xl mx-auto p-6">
+
+            <!-- ========================= FILTROS ========================= -->
+            <div class="bg-white p-5 rounded-xl shadow mb-8">
+                <h2 class="text-xl font-bold mb-4 text-green-800">Filtrar
+                    Tratores</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+
+                    <div>
+                        <label class="font-semibold">Preço Máximo</label>
+                        <input id="fPreco" type="number"
+                            class="w-full p-2 border rounded"
+                            placeholder="500000">
+                    </div>
+
+                    <div>
+                        <label class="font-semibold">Marca</label>
+                        <input id="fMarca" type="text"
+                            class="w-full p-2 border rounded"
+                            placeholder="John Deere...">
+                    </div>
+
+                    <div>
+                        <label class="font-semibold">Potência mínima
+                            (CV)</label>
+                        <input id="fPotencia" type="number"
+                            class="w-full p-2 border rounded">
+                    </div>
+
+                    <div class="flex items-end">
+                        <button onclick="aplicarFiltros()"
+                            class="w-full bg-green-700 hover:bg-green-900 text-white py-2 rounded-lg shadow">
+                            Aplicar Filtros
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================= CARROSSEL (Swiper) ========================= -->
+            <h2 class="text-2xl font-bold mb-3 text-green-800">Categorias</h2>
+
+            <div class="swiper mySwiper mb-10">
+                <div class="swiper-wrapper" id="carouselCategorias"></div>
+
+                <div class="swiper-button-next text-green-900"></div>
+                <div class="swiper-button-prev text-green-900"></div>
+            </div>
+
+            <!-- ========================= GALERIAS DE PRODUTOS ========================= -->
+            <div id="galerias"></div>
+
+        </div>
+
+        <!-- ========================= PAINEL DE DETALHES ========================= -->
+        <div id="painelDetalhes"
+            class="fixed right-0 top-0 w-[420px] h-full bg-white shadow-2xl p-6 hidden detalhes-panel overflow-y-auto">
+
+            <button onclick="fecharDetalhes()"
+                class="absolute right-4 top-4 text-red-600 text-2xl font-bold">
+                ✕
+            </button>
+
+            <img id="detFoto" class="w-full rounded-lg shadow mb-4">
+
+            <h2 id="detTitulo"
+                class="text-2xl text-green-800 font-bold mb-2"></h2>
+
+            <p id="detDesc" class="text-gray-600 mb-3"></p>
+
+            <h3 id="detPreco"
+                class="text-3xl text-green-900 font-bold mb-6"></h3>
+
+            <button class="bg-green-700 text-white w-full py-3 rounded-xl">
+                Solicitar Cotação
+            </button>
+        </div>
+
+        <!-- ========================= JAVASCRIPT ========================= -->
+        <script>
+const API = "http://localhost:8081/api";
+let produtosCache = [];
+
+async function carregar() {
+    const res = await fetch(API + "/produtos");
+    produtosCache = await res.json();
+
+    montarCarrossel();
+    montarGalerias(produtosCache);
+}
+
+/* ============================= CARROSSEL ============================= */
+function montarCarrossel() {
+    const categorias = {};
+
+    produtosCache.forEach(p => {
+        const cat = p.categoria?.nome || "Sem Categoria";
+        if (!categorias[cat]) categorias[cat] = [];
+    });
+
+    let html = "";
+    let index = 0;
+
+    for (let cat in categorias) {
+        html += `
+            <div class="swiper-slide">
+                <div class="bg-white shadow p-5 rounded-xl text-center text-green-800 font-bold text-xl">
+                    ${cat}
+                </div>
+            </div>
+        `;
+        index++;
+    }
+
+    document.getElementById("carouselCategorias").innerHTML = html;
+
+    new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 20,
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        breakpoints: {
+            320: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 }
+        }
+    });
+}
+
+/* ============================= GALERIAS ============================= */
+function montarGalerias(lista) {
+    const categorias = {};
+
+    lista.forEach(p => {
+        const cat = p.categoria?.nome || "Sem Categoria";
+        if (!categorias[cat]) categorias[cat] = [];
+        categorias[cat].push(p);
+    });
+
+    let html = "";
+
+    for (let categoria in categorias) {
+        html += `
+            <h2 class="text-2xl font-bold mt-10 mb-4 text-green-800">${categoria}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        `;
+
+        categorias[categoria].forEach(p => {
+            html += `
+                <div class="bg-white rounded-xl shadow card-hover p-3"
+                     onclick="abrirDetalhes(${p.id})">
+                    <img src="${p.fotoProduto ? API.replace('/api','') + p.fotoProduto
+                        : 'https://via.placeholder.com/350x200?text=Trator'}"
+                         class="rounded-lg h-48 w-full object-cover mb-3">
+                    <h3 class="font-bold text-lg text-green-800">${p.nome}</h3>
+                    <p class="text-green-900 font-bold text-xl">R$ ${p.preco?.toFixed(2)}</p>
+                </div>
+            `;
+        });
+
+        html += "</div>";
+    }
+
+    document.getElementById("galerias").innerHTML = html;
+}
+
+/* ============================= FILTROS ============================= */
+function aplicarFiltros() {
+    const preco = Number(document.getElementById("fPreco").value);
+    const marca = document.getElementById("fMarca").value.toLowerCase();
+    const potencia = Number(document.getElementById("fPotencia").value);
+
+    const filtrados = produtosCache.filter(p => {
+        let ok = true;
+        if (preco && p.preco > preco) ok = false;
+        if (marca && !p.nome.toLowerCase().includes(marca)) ok = false;
+        if (potencia && !p.descricao?.includes(potencia)) ok = false;
+        return ok;
+    });
+
+    montarGalerias(filtrados);
+}
+
+/* ============================= DETALHES ============================= */
+async function abrirDetalhes(id) {
+    const res = await fetch(API + "/produtos/" + id);
+    const p = await res.json();
+
+    detTitulo.innerText = p.nome;
+    detDesc.innerText = p.descricao || "";
+    detPreco.innerText = "R$ " + p.preco.toFixed(2);
+    detFoto.src = p.fotoProduto ? API.replace('/api','') + p.fotoProduto : "";
+
+    painelDetalhes.classList.remove("hidden");
+}
+
+function fecharDetalhes() {
+    painelDetalhes.classList.add("hidden");
+}
+
+carregar();
+</script>
+
+    </body>
+</html>
