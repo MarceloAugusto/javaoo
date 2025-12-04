@@ -1,16 +1,13 @@
-FROM ubuntu:latest AS build
+FROM openjdk:17-jdk
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
-COPY . .
+# Configurar o diretório de trabalho
+WORKDIR /app
 
-RUN apt-get install maven -y
-RUN mvn clean install
+# Copiar o arquivo JAR para dentro do contêiner
+COPY target/myapp.jar app.jar
 
-FROM openjdk:17-jdk-alpine
-
+# Expôr a porta 8080
 EXPOSE 8080
 
-COPY --from=build /target/deploy_render-1.0.0.jar app.jar
-
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+# Definir o comando para rodar a aplicação Spring Boot
+ENTRYPOINT ["java", "-jar", "/app.jar"]
