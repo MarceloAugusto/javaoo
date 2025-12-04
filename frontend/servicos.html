@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossos Serviços - AgroTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .service-desc {
+            color: #666;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">Agro<span>Tech</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quem-somos.html">Quem Somos</a></li>
+                <li><a href="produtos.html">Tratores</a></li>
+
+                <li><a href="servicos.html" class="active">Serviços</a></li>
+                <li><a href="contatos.html">Contatos</a></li>
+                <li><a href="login.html" class="btn-login">Login</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="hero"
+        style="height: 300px; background-image: url('https://thumbs.dreamstime.com/b/trator-de-equipamento-agr%C3%ADcola-instalado-no-terreno-faixa-espa%C3%A7o-c%C3%B3pia-banner-191796431.jpg');">
+        <h1>Serviços Especializados</h1>
+    </section>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="section-title">Soluções para sua Produtividade</div>
+        <p style="text-align: center; max-width: 800px; margin: 0 auto;">Nossa equipe técnica é altamente capacitada
+            para garantir que seu maquinário esteja sempre pronto para o trabalho.</p>
+
+        <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card">
+                <i class="fas fa-tools service-icon"></i>
+                <h3 class="service-title">Manutenção Preventiva</h3>
+                <p class="service-desc">Evite paradas inesperadas. Nossos planos de revisão garantem a máxima
+                    disponibilidade do seu equipamento.</p>
+                <a href="contatos.html" class="btn-cta" style="font-size: 0.9rem;">Agendar Revisão</a>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service-card">
+                <i class="fas fa-cogs service-icon"></i>
+                <h3 class="service-title">Assistência Técnica</h3>
+                <p class="service-desc">Atendimento rápido e eficiente no campo ou em nossa oficina, com diagnósticos
+                    precisos e peças originais.</p>
+                <a href="contatos.html" class="btn-cta" style="font-size: 0.9rem;">Solicitar Suporte</a>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service-card">
+                <i class="fas fa-tractor service-icon"></i>
+                <h3 class="service-title">Agricultura de Precisão</h3>
+                <p class="service-desc">Instalação e calibração de sistemas GPS, monitores de colheita e piloto
+                    automático.</p>
+                <a href="contatos.html" class="btn-cta" style="font-size: 0.9rem;">Saiba Mais</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>AgroTech</h3>
+                <p>Soluções completas para o homem do campo. Tratores, peças e serviços com a qualidade que você confia.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Links Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="quem-somos.html">Quem Somos</a></li>
+                    <li><a href="produtos.html">Tratores</a></li>
+
+                    <li><a href="contatos.html">Contatos</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contato</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Tutunas, 1000 - MG</li>
+                    <li><i class="fas fa-phone"></i> (34) 99112-3456</li>
+                    <li><i class="fas fa-envelope"></i> contato@agrotech.com.br</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 AgroTech - Todos os direitos reservados.
+        </div>
+    </footer>
+
+</body>
+
+</html>

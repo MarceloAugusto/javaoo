@@ -40,13 +40,26 @@ public class Produto {
 
     public Produto() {}
 
-    public Produto(Integer id, String nome, String descricao, BigDecimal preco, Integer estoque, Categoria categoria, LocalDateTime criadoEm) {
+    public Produto(Integer id, String nome, String descricao, BigDecimal preco, Integer estoque, Categoria categoria, String foto, Integer potenciaCV, Integer anoFabricacao, Double pesoKG, String motor, String transmissao, String marchas, String combustivel, Integer eixos, Double largura, Double altura, Double comprimento, String fabricante, LocalDateTime criadoEm) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.estoque = estoque;
         this.categoria = categoria;
+        this.foto = foto;
+        this.potenciaCV = potenciaCV;
+        this.anoFabricacao = anoFabricacao;
+        this.pesoKG = pesoKG;
+        this.motor = motor;
+        this.transmissao = transmissao;
+        this.marchas = marchas;
+        this.combustivel = combustivel;
+        this.eixos = eixos;
+        this.largura = largura;
+        this.altura = altura;
+        this.comprimento = comprimento;
+        this.fabricante = fabricante;
         this.criadoEm = criadoEm;
     }
 

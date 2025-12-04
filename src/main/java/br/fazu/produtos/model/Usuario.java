@@ -27,6 +27,14 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public Usuario(Long id, String nome, String email, String senha, String fotoPerfil) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.fotoPerfil = fotoPerfil;
+    }
+
     // GETTERS E SETTERS
     public Long getId() {
         return id;

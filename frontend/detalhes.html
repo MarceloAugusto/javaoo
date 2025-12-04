@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - AgroTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-detail-container {
+            display: flex;
+            gap: 50px;
+            margin-top: 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-detail-img {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .product-detail-img img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-detail-info {
+            flex: 1;
+        }
+
+        .detail-category {
+            color: var(--secondary-green);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .detail-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .detail-price {
+            font-size: 2rem;
+            color: var(--primary-green);
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .detail-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .detail-meta {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .detail-meta p {
+            margin-bottom: 10px;
+        }
+
+        .detail-meta strong {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .product-detail-container {
+                flex-direction: column;
+            }
+
+            .product-detail-img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">Agro<span>Tech</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quem-somos.html">Quem Somos</a></li>
+                <li><a href="produtos.html">Tratores</a></li>
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="contatos.html">Contatos</a></li>
+                <li><a href="login.html" class="btn-login">Login</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div style="background: #eee; padding: 20px 0;">
+        <div class="container">
+            <a href="index.html">Home</a> / <a href="produtos.html">Produtos</a> / <span
+                id="breadcrumbName">Detalhes</span>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container">
+        <div id="productDetail" class="product-detail-container">
+            <div class="loading" style="text-align: center; width: 100%;">
+                <i class="fas fa-spinner fa-spin"></i> Carregando detalhes do produto...
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>AgroTech</h3>
+                <p>Soluções completas para o homem do campo. Tratores, peças e serviços com a qualidade que você confia.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Links Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="quem-somos.html">Quem Somos</a></li>
+                    <li><a href="produtos.html">Tratores</a></li>
+                    <li><a href="contatos.html">Contatos</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contato</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Tutunas, 1000 - MG</li>
+                    <li><i class="fas fa-phone"></i> (34) 99112-3456</li>
+                    <li><i class="fas fa-envelope"></i> contato@agrotech.com.br</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 AgroTech - Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "https://javaoo-3.onrender.com/api";
+        const detailContainer = document.getElementById('productDetail');
+        const breadcrumbName = document.getElementById('breadcrumbName');
+
+        // Get ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            detailContainer.innerHTML = "<p>Produto não especificado.</p>";
+        } else {
+            fetch(`${API_URL}/produtos/${productId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Produto não encontrado');
+                    return res.json();
+                })
+                .then(p => {
+                    let categoriaNome = "Geral";
+                    if (p.categoria) {
+                        if (typeof p.categoria === 'object' && p.categoria.nome) {
+                            categoriaNome = p.categoria.nome;
+                        } else if (typeof p.categoria === 'string') {
+                            categoriaNome = p.categoria;
+                        }
+                    }
+
+                    const fotoUrl = p.foto ? `${API_URL}/produtos/${p.id}/foto` : 'https://via.placeholder.com/500x400?text=Sem+Foto';
+
+                    breadcrumbName.innerText = p.nome;
+
+                    detailContainer.innerHTML = `
+                        <div class="product-detail-img">
+                            <img src="${fotoUrl}" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/500x400?text=Erro+Foto'">
+                        </div>
+                        <div class="product-detail-info">
+                            <div class="detail-category">${categoriaNome}</div>
+                            <h1 class="detail-title">${p.nome}</h1>
+                            <div class="detail-price">R$ ${parseFloat(p.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                            
+                            <div class="detail-meta">
+                                <p><strong>Fabricante:</strong> ${p.fabricante || 'Não informado'}</p>
+                                <p><strong>Estoque Disponível:</strong> ${p.estoque} unidades</p>
+                                <p><strong>Código:</strong> #${p.id}</p>
+                            </div>
+
+                            <div class="detail-description">
+                                <h3 style="margin-bottom:10px;">Descrição</h3>
+                                <p>Este é um equipamento de alta performance, ideal para aumentar a produtividade da sua lavoura. Entre em contato para mais especificações técnicas.</p>
+                            </div>
+
+                            <a href="contatos.html?assunto=Interesse no produto ${p.nome} (ID: ${p.id})" class="btn-cta">Tenho Interesse</a>
+                        </div>
+                    `;
+                })
+                .catch(err => {
+                    console.error(err);
+                    detailContainer.innerHTML = "<p>Erro ao carregar detalhes do produto. Ele pode ter sido removido.</p>";
+                });
+        }
+    </script>
+
+</body>
+
+</html>

@@ -26,8 +26,18 @@ public class ProdutoController {
 
     @GetMapping
     public List<Produto> listar() {
-        System.out.println("Passou por aqui");
-        return repository.findAll();
+        List<Produto> produtos = repository.findAll();
+
+        // Para garantir que a categoria seja carregada corretamente
+        for (Produto produto : produtos) {
+            // Aqui, você pode definir qual é a categoria, se não estiver carregada automaticamente
+            // Caso a relação entre Produto e Categoria seja feita com @ManyToOne, por exemplo, a categoria já virá.
+            if (produto.getCategoria() != null) {
+                produto.getCategoria().getNome(); // Isso é só para garantir que a categoria será carregada
+            }
+        }
+
+        return produtos;
     }
 
     @GetMapping("/{id}")

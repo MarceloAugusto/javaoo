@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fale Conosco - AgroTech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">Agro<span>Tech</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quem-somos.html">Quem Somos</a></li>
+                <li><a href="produtos.html">Tratores</a></li>
+
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="contatos.html" class="active">Contatos</a></li>
+                <li><a href="login.html" class="btn-login">Login</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="hero"
+        style="height: 300px; background-image: url('https://images.unsplash.com/photo-1444858291040-58f756a3bdd6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+        <h1>Fale Conosco</h1>
+    </section>
+
+    <!-- Content -->
+    <div class="container">
+        <div style="display: flex; gap: 50px; flex-wrap: wrap;">
+
+            <!-- Contact Info -->
+            <div style="flex: 1; min-width: 300px;">
+                <h2 class="section-title" style="text-align: left;">Canais de Atendimento</h2>
+                <p style="margin-bottom: 30px;">Estamos prontos para atender você. Entre em contato por telefone, email
+                    ou visite nossa sede.</p>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;"><i class="fas fa-phone"></i> Telefone
+                    </h3>
+                    <p>(34) 99112-3456 / (34) 3333-4444</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;"><i class="fas fa-envelope"></i> Email
+                    </h3>
+                    <p>vendas@agrotech.com.br</p>
+                    <p>suporte@agrotech.com.br</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;"><i class="fas fa-map-marker-alt"></i>
+                        Endereço</h3>
+                    <p>Av. do Agronegócio, 1000</p>
+                    <p>Uberaba - Minas Gerais/MG</p>
+                    <p>CEP: 01000-000</p>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;">Horário de Atendimento</h3>
+                    <p>Segunda a Sexta: 08h às 18h</p>
+                    <p>Sábado: 08h às 12h</p>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div style="flex: 1; min-width: 300px;">
+                <form class="contact-form"
+                    onsubmit="event.preventDefault(); alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');">
+                    <h2 style="margin-bottom: 20px; color: var(--primary-green);">Envie uma Mensagem</h2>
+
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone">Telefone / WhatsApp</label>
+                        <input type="tel" id="telefone" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assunto">Assunto</label>
+                        <select id="assunto" class="form-control">
+                            <option>Orçamento de Máquinas</option>
+                            <option>Peças e Suprimentos</option>
+                            <option>Agendamento de Serviço</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem</label>
+                        <textarea id="mensagem" class="form-control" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-cta" style="width: 100%;">Enviar Mensagem</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>AgroTech</h3>
+                <p>Soluções completas para o homem do campo. Tratores, peças e serviços com a qualidade que você confia.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Links Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="quem-somos.html">Quem Somos</a></li>
+                    <li><a href="produtos.html">Tratores</a></li>
+
+                    <li><a href="contatos.html">Contatos</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contato</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Tutunas, 1000 - MG</li>
+                    <li><i class="fas fa-phone"></i> (34) 99112-3456</li>
+                    <li><i class="fas fa-envelope"></i> contato@agrotech.com.br</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 AgroTech - Todos os direitos reservados.
+        </div>
+    </footer>
+
+</body>
+
+</html>

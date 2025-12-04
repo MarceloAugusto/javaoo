@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <title>Dashboard – Sistema CRUD</title>
 
-        <style>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard – Sistema CRUD</title>
+
+    <style>
         body {
             font-family: Arial;
             background: #f4f4f4;
@@ -17,22 +18,14 @@
             color: white;
             padding: 15px;
             text-align: center;
-            position: relative;
-        }
-
-        header button {
-            position: absolute;
-            right: 20px;
-            top: 15px;
-            background: #ff4444;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
         }
 
         .container {
             padding: 20px;
+        }
+
+        nav {
+            margin-bottom: 20px;
         }
 
         nav button {
@@ -40,8 +33,8 @@
             margin-right: 10px;
             border: none;
             border-radius: 5px;
-            background: #ddd;
             cursor: pointer;
+            background: #ddd;
         }
 
         nav button.active {
@@ -54,10 +47,11 @@
             padding: 20px;
             margin-top: 15px;
             border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        input, select {
+        input,
+        select {
             padding: 8px;
             width: 300px;
             margin: 5px 0;
@@ -73,8 +67,13 @@
             border-radius: 5px;
         }
 
-        .btn-warning { background: #ffaa00; }
-        .btn-danger { background: #ff4444; }
+        .btn-warning {
+            background: #ffaa00;
+        }
+
+        .btn-danger {
+            background: #ff4444;
+        }
 
         table {
             width: 100%;
@@ -82,492 +81,756 @@
             margin-top: 15px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ccc;
             padding: 8px;
-        }
-
-        img.foto-mini {
-            width: 50px;
-            height: 50px;
-            border-radius: 5px;
-            object-fit: cover;
+            text-align: left;
         }
 
         /* Modal */
         .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
             justify-content: center;
             align-items: center;
+            overflow-y: auto;
         }
 
         .modal-content {
             background: white;
             padding: 20px;
-            width: 350px;
+            width: 500px;
+            max-width: 90%;
             border-radius: 10px;
+            margin: 20px auto;
+        }
+
+        /* Modal de produto com largura x-lg */
+        #modalProduto .modal-content {
+            width: 800px;
+            max-width: 90%;
+            margin-top: 15px;
+        }
+
+        .user-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-photo-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px 0;
+            display: block;
+        }
+
+        .photo-preview {
+            text-align: center;
+        }
+
+        .product-photo {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        h4 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #0066ff;
+            border-bottom: 2px solid #0066ff;
+            padding-bottom: 5px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .form-col input,
+        .form-col select {
+            width: 100%;
         }
     </style>
-    </head>
+</head>
 
-    <body>
+<body>
 
-        <header>
-            <h1>Painel de Controle</h1>
-            <button onclick="logout()">Sair</button>
-        </header>
+    <header>
+        <h1>Painel de Controle</h1>
+        <button onclick="logout()"
+            style="float:right; margin-top:-40px; margin-right:20px; background:#ff4444; color:white; padding:10px; border:none; border-radius:5px;">
+            Sair
+        </button>
+    </header>
 
-        <div class="container">
+    <div class="container">
 
-            <!-- MENU -->
-            <nav>
-                <button id="btnCategorias" class="active"
-                    onclick="mostrar('categorias')">Categorias</button>
-                <button id="btnProdutos"
-                    onclick="mostrar('produtos')">Produtos</button>
-                <button id="btnUsuarios"
-                    onclick="mostrar('usuarios')">Usuários</button>
-            </nav>
+        <!-- MENU -->
+        <nav>
+            <button id="btnCategorias" class="active" onclick="mostrar('categorias')">Categorias</button>
+            <button id="btnProdutos" onclick="mostrar('produtos')">Produtos</button>
+            <button id="btnUsuarios" onclick="mostrar('usuarios')">Usuários</button>
+        </nav>
 
-            <!-- ============================= -->
-            <!-- CATEGORIAS -->
-            <!-- ============================= -->
-            <div id="categorias" class="box">
-                <h2>Gerenciar Categorias</h2>
+        <!-- ============================= -->
+        <!-- CATEGORIAS -->
+        <!-- ============================= -->
+        <div id="categorias" class="box">
+            <h2>Gerenciar Categorias</h2>
 
-                <input id="catNome" placeholder="Nome da categoria"><br>
-                <button class="action" onclick="criarCategoria()">Cadastrar
-                    Categoria</button>
+            <input id="catNome" placeholder="Nome da categoria"><br>
+            <button class="action" onclick="criarCategoria()">Cadastrar Categoria</button>
+            <p id="catMsg"></p>
 
-                <h3>Lista de Categorias</h3>
-                <button class="action" onclick="listarCategorias()">Atualizar
-                    Lista</button>
+            <h3>Lista de Categorias</h3>
+            <button class="action" onclick="listarCategorias()">Atualizar Lista</button>
 
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Nome</th><th>Ações</th></tr>
-                    </thead>
-                    <tbody id="listaCategorias"></tbody>
-                </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaCategorias"></tbody>
+            </table>
+        </div>
 
-            <!-- ============================= -->
-            <!-- PRODUTOS -->
-            <!-- ============================= -->
-            <div id="produtos" class="box" style="display:none;">
-                <h2>Gerenciar Produtos</h2>
+        <!-- ============================= -->
+        <!-- PRODUTOS -->
+        <!-- ============================= -->
+        <div id="produtos" class="box" style="display:none;">
+            <h2>Gerenciar Produtos</h2>
 
-                <input id="prodNome" placeholder="Nome"><br>
+            <div class="form-section">
+                <h4>Informações Básicas</h4>
+                <input id="prodNome" placeholder="Nome *"><br>
                 <input id="prodDesc" placeholder="Descrição"><br>
-                <input id="prodPreco" type="number" step="0.01"
-                    placeholder="Preço"><br>
-                <input id="prodEstoque" type="number" placeholder="Estoque"><br>
+                <input id="prodPreco" type="number" step="0.01" placeholder="Preço *"><br>
+                <input id="prodEstoque" type="number" placeholder="Estoque *"><br>
                 <select id="prodCategoria"></select><br>
-
-                <button class="action" onclick="criarProduto()">Cadastrar
-                    Produto</button>
-
-                <h3>Lista de Produtos</h3>
-                <button class="action" onclick="listarProdutos()">Atualizar
-                    Lista</button>
-
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Nome</th><th>Preço</th><th>Categoria</th><th>Ações</th></tr>
-                    </thead>
-                    <tbody id="listaProdutos"></tbody>
-                </table>
+                <input id="prodFabricante" placeholder="Fabricante"><br>
+                <label>Foto do Produto:</label><br>
+                <input id="prodFoto" type="file" accept="image/*" style="width:300px;"><br>
             </div>
 
-            <!-- ============================= -->
-            <!-- USUÁRIOS -->
-            <!-- ============================= -->
-            <div id="usuarios" class="box" style="display:none;">
-                <h2>Gerenciar Usuários</h2>
-
-                <input id="userNome" placeholder="Nome"><br>
-                <input id="userEmail" placeholder="Email"><br>
-                <input id="userSenha" type="password" placeholder="Senha"><br>
-                <input id="userFoto" type="file"><br>
-
-                <button class="action" onclick="criarUsuario()">Cadastrar
-                    Usuário</button>
-
-                <h3>Lista de Usuários</h3>
-                <button class="action" onclick="listarUsuarios()">Atualizar
-                    Lista</button>
-
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Nome</th><th>Email</th><th>Foto</th><th>Ações</th></tr>
-                    </thead>
-                    <tbody id="listaUsuarios"></tbody>
-                </table>
+            <div class="form-section">
+                <h4>Especificações Técnicas</h4>
+                <input id="prodPotenciaCV" type="number" placeholder="Potência (CV)"><br>
+                <input id="prodAnoFabricacao" type="number" placeholder="Ano de Fabricação"><br>
+                <input id="prodPesoKG" type="number" step="0.01" placeholder="Peso (KG)"><br>
+                <input id="prodMotor" placeholder="Motor"><br>
+                <input id="prodTransmissao" placeholder="Transmissão"><br>
+                <input id="prodMarchas" placeholder="Marchas"><br>
+                <input id="prodCombustivel" placeholder="Combustível"><br>
+                <input id="prodEixos" type="number" placeholder="Número de Eixos"><br>
             </div>
 
+            <div class="form-section">
+                <h4>Dimensões (em metros)</h4>
+                <input id="prodLargura" type="number" step="0.01" placeholder="Largura"><br>
+                <input id="prodAltura" type="number" step="0.01" placeholder="Altura"><br>
+                <input id="prodComprimento" type="number" step="0.01" placeholder="Comprimento"><br>
+            </div>
+
+            <button class="action" onclick="criarProduto()">Cadastrar Produto</button>
+            <p id="prodMsg"></p>
+
+            <h3>Lista de Produtos</h3>
+            <button class="action" onclick="listarProdutos()">Atualizar Lista</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Fabricante</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaProdutos"></tbody>
+            </table>
         </div>
 
-        <!-- MODAL EDITAR CATEGORIA -->
-        <div id="modalCategoria" class="modal">
-            <div class="modal-content">
-                <h3>Editar Categoria</h3>
-                <input id="editCatNome">
-                <button class="action btn-warning"
-                    onclick="salvarEdicaoCategoria()">Salvar</button>
-                <button class="action btn-danger"
-                    onclick="fecharModalCategoria()">Cancelar</button>
-            </div>
+        <!-- ============================= -->
+        <!-- USUÁRIOS -->
+        <!-- ============================= -->
+        <div id="usuarios" class="box" style="display:none;">
+            <h2>Gerenciar Usuários</h2>
+
+            <input id="userNome" placeholder="Nome"><br>
+            <input id="userEmail" type="email" placeholder="Email"><br>
+            <input id="userSenha" type="password" placeholder="Senha"><br>
+
+            <button class="action" onclick="criarUsuario()">Cadastrar Usuário</button>
+            <p id="userMsg"></p>
+
+            <h3>Lista de Usuários</h3>
+            <button class="action" onclick="listarUsuarios()">Atualizar Lista</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaUsuarios"></tbody>
+            </table>
         </div>
 
-        <!-- MODAL EDITAR PRODUTO -->
-        <div id="modalProduto" class="modal">
-            <div class="modal-content">
-                <h3>Editar Produto</h3>
-                <input id="editProdNome"><br>
-                <input id="editProdDesc"><br>
-                <input id="editProdPreco" type="number" step="0.01"><br>
-                <input id="editProdEstoque" type="number"><br>
-                <select id="editProdCategoria"></select><br>
+    </div>
 
-                <button class="action btn-warning"
-                    onclick="salvarEdicaoProduto()">Salvar</button>
-                <button class="action btn-danger"
-                    onclick="fecharModalProduto()">Cancelar</button>
-            </div>
+    <!-- ======================= -->
+    <!-- MODAL EDITAR CATEGORIA -->
+    <!-- ======================= -->
+    <div id="modalCategoria" class="modal">
+        <div class="modal-content">
+            <h3>Editar Categoria</h3>
+            <input id="editCatNome">
+            <button class="action btn-warning" onclick="salvarEdicaoCategoria()">Salvar</button>
+            <button class="action btn-danger" onclick="fecharModalCategoria()">Cancelar</button>
         </div>
+    </div>
 
-        <!-- MODAL EDITAR USUÁRIO -->
-        <div id="modalUsuario" class="modal">
-            <div class="modal-content">
-                <h3>Editar Usuário</h3>
-                <input id="editUserNome"><br>
-                <input id="editUserEmail"><br>
-                <input id="editUserSenha" type="password"><br>
-                <input id="editUserFoto" type="file"><br>
+    <!-- ======================= -->
+    <!-- MODAL EDITAR PRODUTO -->
+    <!-- ======================= -->
+    <div id="modalProduto" class="modal">
+        <div class="modal-content">
+            <h3>Editar Produto</h3>
 
-                <button class="action btn-warning"
-                    onclick="salvarEdicaoUsuario()">Salvar</button>
-                <button class="action btn-danger"
-                    onclick="fecharModalUsuario()">Cancelar</button>
+            <div class="form-section">
+                <h4>Informações Básicas</h4>
+                <div class="form-row">
+                    <div class="form-col">
+                        <input id="editProdNome" placeholder="Nome *"><br>
+                        <input id="editProdPreco" type="number" step="0.01" placeholder="Preço *"><br>
+                        <select id="editProdCategoria"></select><br>
+                    </div>
+                    <div class="form-col">
+                        <input id="editProdDesc" placeholder="Descrição"><br>
+                        <input id="editProdEstoque" type="number" placeholder="Estoque *"><br>
+                        <input id="editProdFabricante" placeholder="Fabricante"><br>
+                    </div>
+                </div>
+
+                <label>Alterar Foto do Produto:</label><br>
+                <input id="editProdFoto" type="file" accept="image/*" style="width:300px;"><br>
+                <div class="photo-preview">
+                    <img id="editProdFotoPreview" class="product-photo" src="" alt="Foto do produto"
+                        style="display:none;">
+                </div>
             </div>
+
+            <div class="form-section">
+                <h4>Especificações Técnicas</h4>
+                <div class="form-row">
+                    <div class="form-col">
+                        <input id="editProdPotenciaCV" type="number" placeholder="Potência (CV)"><br>
+                        <input id="editProdPesoKG" type="number" step="0.01" placeholder="Peso (KG)"><br>
+                        <input id="editProdTransmissao" placeholder="Transmissão"><br>
+                        <input id="editProdCombustivel" placeholder="Combustível"><br>
+                    </div>
+                    <div class="form-col">
+                        <input id="editProdAnoFabricacao" type="number" placeholder="Ano de Fabricação"><br>
+                        <input id="editProdMotor" placeholder="Motor"><br>
+                        <input id="editProdMarchas" placeholder="Marchas"><br>
+                        <input id="editProdEixos" type="number" placeholder="Número de Eixos"><br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4>Dimensões (em metros)</h4>
+                <div class="form-row">
+                    <input id="editProdLargura" type="number" step="0.01" placeholder="Largura" style="flex: 1;"><br>
+                    <input id="editProdAltura" type="number" step="0.01" placeholder="Altura" style="flex: 1;"><br>
+                    <input id="editProdComprimento" type="number" step="0.01" placeholder="Comprimento"
+                        style="flex: 1;"><br>
+                </div>
+            </div>
+
+            <button class="action btn-warning" onclick="salvarEdicaoProduto()">Salvar</button>
+            <button class="action btn-danger" onclick="fecharModalProduto()">Cancelar</button>
         </div>
+    </div>
 
-        <script>
+    <!-- ======================= -->
+    <!-- MODAL EDITAR USUÁRIO -->
+    <!-- ======================= -->
+    <div id="modalUsuario" class="modal">
+        <div class="modal-content">
+            <h3>Editar Usuário</h3>
 
-const API = "http://localhost:8081/api";
+            <div class="photo-preview">
+                <img id="editUserFotoPreview" class="user-photo-large" src="" alt="Foto do usuário"
+                    style="display:none;">
+            </div>
 
-// ================================
-// Controle de seções
-// ================================
-function mostrar(secao) {
-    document.getElementById("categorias").style.display = secao === "categorias" ? "block" : "none";
-    document.getElementById("produtos").style.display = secao === "produtos" ? "block" : "none";
-    document.getElementById("usuarios").style.display = secao === "usuarios" ? "block" : "none";
+            <input id="editUserNome" placeholder="Nome"><br>
+            <input id="editUserEmail" type="email" placeholder="Email"><br>
+            <input id="editUserSenha" type="password" placeholder="Nova Senha (deixe em branco para manter)"><br>
 
-    btnCategorias.classList.toggle("active", secao === "categorias");
-    btnProdutos.classList.toggle("active", secao === "produtos");
-    btnUsuarios.classList.toggle("active", secao === "usuarios");
-}
+            <label>Alterar Foto:</label><br>
+            <input id="editUserFoto" type="file" accept="image/*" style="width:100%;"><br>
 
-// ================================
-// Logout
-// ================================
-function logout() {
-    window.location.href = "index.html";
-}
+            <button class="action btn-warning" onclick="salvarEdicaoUsuario()">Salvar</button>
+            <button class="action btn-danger" onclick="fecharModalUsuario()">Cancelar</button>
+        </div>
+    </div>
 
-// ================================
-// Categorias
-// ================================
-let categoriaEditandoID = null;
+    <script>
 
-function criarCategoria() {
-    fetch(API + "/categorias", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome: catNome.value })
-    }).then(() => listarCategorias());
-}
+        const API = "https://javaoo-3.onrender.com/api";
 
-function listarCategorias() {
-    fetch(API + "/categorias")
-        .then(res => res.json())
-        .then(lista => {
-            listaCategorias.innerHTML = "";
-            lista.forEach(c => {
-                listaCategorias.innerHTML += `
-                <tr>
-                    <td>${c.id}</td>
-                    <td>${c.nome}</td>
-                    <td>
-                        <button class="btn-warning action" onclick="abrirModalCategoria(${c.id}, '${c.nome}')">Editar</button>
-                        <button class="btn-danger action" onclick="excluirCategoria(${c.id})">Excluir</button>
-                    </td>
-                </tr>`;
-            });
-        });
-}
+        let categoriaEditandoID = null;
+        let produtoEditandoID = null;
+        let usuarioEditandoID = null;
 
-function abrirModalCategoria(id, nome) {
-    categoriaEditandoID = id;
-    editCatNome.value = nome;
-    modalCategoria.style.display = "flex";
-}
+        // ================================
+        function mostrar(secao) {
+            document.getElementById("categorias").style.display = (secao === "categorias") ? "block" : "none";
+            document.getElementById("produtos").style.display = (secao === "produtos") ? "block" : "none";
+            document.getElementById("usuarios").style.display = (secao === "usuarios") ? "block" : "none";
 
-function salvarEdicaoCategoria() {
-    fetch(API + "/categorias/" + categoriaEditandoID, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome: editCatNome.value })
-    }).then(() => {
-        fecharModalCategoria();
-        listarCategorias();
-    });
-}
-
-function fecharModalCategoria() {
-    modalCategoria.style.display = "none";
-}
-
-function excluirCategoria(id) {
-    if (confirm("Excluir categoria?"))
-        fetch(API + "/categorias/" + id, { method: "DELETE" })
-        .then(() => listarCategorias());
-}
-
-// ================================
-// Produtos
-// ================================
-let produtoEditandoID = null;
-
-function criarProduto() {
-    const data = {
-        nome: prodNome.value,
-        descricao: prodDesc.value,
-        preco: parseFloat(prodPreco.value),
-        estoque: parseInt(prodEstoque.value),
-        categoria: { id: Number(prodCategoria.value) }
-    };
-
-    fetch(API + "/produtos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    }).then(() => listarProdutos());
-}
-
-function listarProdutos() {
-    fetch(API + "/produtos")
-        .then(res => res.json())
-        .then(lista => {
-            listaProdutos.innerHTML = "";
-            lista.forEach(p => {
-                listaProdutos.innerHTML += `
-                <tr>
-                    <td>${p.id}</td>
-                    <td>${p.nome}</td>
-                    <td>${p.preco}</td>
-                    <td>${p.categoria?.nome ?? "Sem categoria"}</td>
-                    <td>
-                        <button class="btn-warning action" onclick="abrirModalProduto(${p.id})">Editar</button>
-                        <button class="btn-danger action" onclick="excluirProduto(${p.id})">Excluir</button>
-                    </td>
-                </tr>`;
-            });
-        });
-}
-
-function excluirProduto(id) {
-    if (confirm("Excluir produto?"))
-        fetch(API + "/produtos/" + id, { method: "DELETE" })
-            .then(() => listarProdutos());
-}
-
-function abrirModalProduto(id) {
-    produtoEditandoID = id;
-
-    fetch(API + "/produtos/" + id)
-        .then(res => res.json())
-        .then(p => {
-            editProdNome.value = p.nome;
-            editProdDesc.value = p.descricao;
-            editProdPreco.value = p.preco;
-            editProdEstoque.value = p.estoque;
-            carregarCategoriasNoSelectEdit(p.categoria?.id);
-            modalProduto.style.display = "flex";
-        });
-}
-
-function carregarCategoriasNoSelectEdit(selectedId) {
-    fetch(API + "/categorias")
-        .then(res => res.json())
-        .then(lista => {
-            editProdCategoria.innerHTML = "";
-            lista.forEach(c => {
-                editProdCategoria.innerHTML += `
-                <option value="${c.id}" ${selectedId == c.id ? "selected" : ""}>${c.nome}</option>`;
-            });
-        });
-}
-
-function salvarEdicaoProduto() {
-    const data = {
-        nome: editProdNome.value,
-        descricao: editProdDesc.value,
-        preco: parseFloat(editProdPreco.value),
-        estoque: parseInt(editProdEstoque.value),
-        categoria: { id: Number(editProdCategoria.value) }
-    };
-
-    fetch(API + "/produtos/" + produtoEditandoID, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    }).then(() => {
-        fecharModalProduto();
-        listarProdutos();
-    });
-}
-
-function fecharModalProduto() {
-    modalProduto.style.display = "none";
-}
-
-function carregarCategoriasNoSelect() {
-    fetch(API + "/categorias")
-        .then(res => res.json())
-        .then(lista => {
-            prodCategoria.innerHTML = "";
-            lista.forEach(c => {
-                prodCategoria.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
-            });
-        });
-}
-
-// ================================
-// USUÁRIOS
-// ================================
-let usuarioEditandoID = null;
-
-function criarUsuario() {
-    const data = {
-        nome: userNome.value,
-        email: userEmail.value,
-        senha: userSenha.value
-    };
-
-    fetch(API + "/usuarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(usuario => {
-        if (userFoto.files.length > 0) {
-            const fd = new FormData();
-            fd.append("foto", userFoto.files[0]);
-
-            fetch(API + "/usuarios/" + usuario.id + "/upload-foto", {
-                method: "POST",
-                body: fd
-            }).then(() => listarUsuarios());
-        } else {
-            listarUsuarios();
+            document.getElementById("btnCategorias").classList.toggle("active", secao === "categorias");
+            document.getElementById("btnProdutos").classList.toggle("active", secao === "produtos");
+            document.getElementById("btnUsuarios").classList.toggle("active", secao === "usuarios");
         }
-    });
-}
 
-function listarUsuarios() {
-    fetch(API + "/usuarios")
-        .then(res => res.json())
-        .then(lista => {
-            listaUsuarios.innerHTML = "";
-            lista.forEach(u => {
-                listaUsuarios.innerHTML += `
-                <tr>
-                    <td>${u.id}</td>
-                    <td>${u.nome}</td>
-                    <td>${u.email}</td>
-                    <td>${u.fotoPerfil ?
-                        `<img class='foto-mini' src="http://localhost:8081${u.fotoPerfil}">` :
-                        "Sem foto"}</td>
-                    <td>
-                        <button class="btn-warning action" onclick="abrirModalUsuario(${u.id})">Editar</button>
-                        <button class="btn-danger action" onclick="excluirUsuario(${u.id})">Excluir</button>
-                    </td>
-                </tr>`;
-            });
-        });
-}
+        // ================================
+        function logout() {
+            fetch(API + "/usuarios/logout")
+                .then(() => window.location.href = "index.html");
+        }
 
-function abrirModalUsuario(id) {
-    usuarioEditandoID = id;
-
-    fetch(API + "/usuarios/" + id)
-        .then(res => res.json())
-        .then(u => {
-            editUserNome.value = u.nome;
-            editUserEmail.value = u.email;
-            editUserSenha.value = u.senha;
-
-            modalUsuario.style.display = "flex";
-        });
-}
-
-function salvarEdicaoUsuario() {
-    const data = {
-        nome: editUserNome.value,
-        email: editUserEmail.value,
-        senha: editUserSenha.value
-    };
-
-    fetch(API + "/usuarios/" + usuarioEditandoID, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(() => {
-        if (editUserFoto.files.length > 0) {
-            const fd = new FormData();
-            fd.append("foto", editUserFoto.files[0]);
-
-            fetch(API + "/usuarios/" + usuarioEditandoID + "/upload-foto", {
+        // ================================
+        // CATEGORIAS
+        // ================================
+        function criarCategoria() {
+            fetch(API + "/categorias", {
                 method: "POST",
-                body: fd
-            }).then(() => {
-                fecharModalUsuario();
-                listarUsuarios();
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nome: catNome.value })
+            })
+                .then(res => res.json())
+                .then(() => {
+                    catNome.value = "";
+                    listarCategorias();
+                    carregarCategoriasNoSelect();
+                });
+        }
+
+        function listarCategorias() {
+            fetch(API + "/categorias")
+                .then(res => res.json())
+                .then(lista => {
+                    listaCategorias.innerHTML = "";
+                    lista.forEach(c => {
+                        listaCategorias.innerHTML += `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.nome}</td>
+                <td>
+                    <button class="btn-warning action" onclick="abrirModalCategoria(${c.id}, '${c.nome}')">Editar</button>
+                    <button class="btn-danger action" onclick="excluirCategoria(${c.id})">Excluir</button>
+                </td>
+            </tr>`;
+                    });
+                });
+        }
+
+        function abrirModalCategoria(id, nome) {
+            categoriaEditandoID = id;
+            editCatNome.value = nome;
+            modalCategoria.style.display = "flex";
+        }
+
+        function fecharModalCategoria() {
+            modalCategoria.style.display = "none";
+        }
+
+        function salvarEdicaoCategoria() {
+            fetch(API + "/categorias/" + categoriaEditandoID, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nome: editCatNome.value })
+            })
+                .then(() => {
+                    fecharModalCategoria();
+                    listarCategorias();
+                });
+        }
+
+        function excluirCategoria(id) {
+            if (!confirm("Excluir esta categoria?")) return;
+
+            fetch(API + "/categorias/" + id, { method: "DELETE" })
+                .then(() => listarCategorias());
+        }
+
+        // ================================
+        // PRODUTOS
+        // ================================
+        async function criarProduto() {
+            const data = {
+                nome: prodNome.value,
+                descricao: prodDesc.value || null,
+                preco: parseFloat(prodPreco.value),
+                estoque: parseInt(prodEstoque.value),
+                categoria: { id: Number(prodCategoria.value) },
+                fabricante: prodFabricante.value || null,
+                potenciaCV: prodPotenciaCV.value ? parseInt(prodPotenciaCV.value) : null,
+                anoFabricacao: prodAnoFabricacao.value ? parseInt(prodAnoFabricacao.value) : null,
+                pesoKG: prodPesoKG.value ? parseFloat(prodPesoKG.value) : null,
+                motor: prodMotor.value || null,
+                transmissao: prodTransmissao.value || null,
+                marchas: prodMarchas.value || null,
+                combustivel: prodCombustivel.value || null,
+                eixos: prodEixos.value ? parseInt(prodEixos.value) : null,
+                largura: prodLargura.value ? parseFloat(prodLargura.value) : null,
+                altura: prodAltura.value ? parseFloat(prodAltura.value) : null,
+                comprimento: prodComprimento.value ? parseFloat(prodComprimento.value) : null
+            };
+
+            // Criar produto primeiro
+            const response = await fetch(API + "/produtos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
             });
-        } else {
+
+            const produtoCriado = await response.json();
+
+            // Se uma foto foi selecionada, fazer upload
+            const fotoInput = document.getElementById("prodFoto");
+            if (fotoInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append("foto", fotoInput.files[0]);
+
+                await fetch(API + "/produtos/" + produtoCriado.id + "/upload-foto", {
+                    method: "POST",
+                    body: formData
+                });
+            }
+
+            // Limpar campos
+            prodNome.value = "";
+            prodDesc.value = "";
+            prodPreco.value = "";
+            prodEstoque.value = "";
+            prodFabricante.value = "";
+            prodPotenciaCV.value = "";
+            prodAnoFabricacao.value = "";
+            prodPesoKG.value = "";
+            prodMotor.value = "";
+            prodTransmissao.value = "";
+            prodMarchas.value = "";
+            prodCombustivel.value = "";
+            prodEixos.value = "";
+            prodLargura.value = "";
+            prodAltura.value = "";
+            prodComprimento.value = "";
+            fotoInput.value = "";
+            listarProdutos();
+        }
+
+        function listarProdutos() {
+            fetch(API + "/produtos")
+                .then(res => res.json())
+                .then(lista => {
+                    console.log("Produtos recebidos:", lista);
+                    listaProdutos.innerHTML = "";
+                    lista.forEach(p => {
+                        const fotoUrl = p.foto ? `${API}/produtos/${p.id}/foto` : 'https://via.placeholder.com/50';
+                        listaProdutos.innerHTML += `
+            <tr>
+                <td><img src="${fotoUrl}" class="user-photo" onerror="this.src='https://via.placeholder.com/50'"></td>
+                <td>${p.id}</td>
+                <td>${p.nome}</td>
+                <td>R$ ${p.preco}</td>
+                <td>${p.estoque}</td>
+                <td>${p.fabricante || '-'}</td>
+                <td>
+                    <button class="btn-warning action" onclick="abrirModalProduto(${p.id})">Editar</button>
+                    <button class="btn-danger action" onclick="excluirProduto(${p.id})">Excluir</button>
+                </td>
+            </tr>`;
+                    });
+                });
+        }
+
+        function excluirProduto(id) {
+            if (!confirm("Deseja excluir este produto?")) return;
+
+            fetch(API + "/produtos/" + id, { method: "DELETE" })
+                .then(() => listarProdutos());
+        }
+
+        function abrirModalProduto(id) {
+            produtoEditandoID = id;
+
+            fetch(API + "/produtos/" + id)
+                .then(res => res.json())
+                .then(p => {
+                    editProdNome.value = p.nome;
+                    editProdDesc.value = p.descricao || '';
+                    editProdPreco.value = p.preco;
+                    editProdEstoque.value = p.estoque;
+                    editProdFabricante.value = p.fabricante || '';
+                    editProdPotenciaCV.value = p.potenciaCV || '';
+                    editProdAnoFabricacao.value = p.anoFabricacao || '';
+                    editProdPesoKG.value = p.pesoKG || '';
+                    editProdMotor.value = p.motor || '';
+                    editProdTransmissao.value = p.transmissao || '';
+                    editProdMarchas.value = p.marchas || '';
+                    editProdCombustivel.value = p.combustivel || '';
+                    editProdEixos.value = p.eixos || '';
+                    editProdLargura.value = p.largura || '';
+                    editProdAltura.value = p.altura || '';
+                    editProdComprimento.value = p.comprimento || '';
+
+                    // Mostrar foto atual se existir
+                    if (p.foto) {
+                        editProdFotoPreview.src = `${API}/produtos/${p.id}/foto`;
+                        editProdFotoPreview.style.display = "block";
+                    } else {
+                        editProdFotoPreview.style.display = "none";
+                    }
+
+                    carregarCategoriasNoSelectEdit(p.categoria?.id);
+
+                    modalProduto.style.display = "flex";
+                });
+        }
+
+        function carregarCategoriasNoSelectEdit(selectedId) {
+            fetch(API + "/categorias")
+                .then(res => res.json())
+                .then(lista => {
+                    editProdCategoria.innerHTML = "";
+
+                    lista.forEach(c => {
+                        editProdCategoria.innerHTML += `
+            <option value="${c.id}" ${selectedId == c.id ? "selected" : ""}>
+                ${c.nome}
+            </option>`;
+                    });
+                });
+        }
+
+        function fecharModalProduto() {
+            modalProduto.style.display = "none";
+            document.getElementById("editProdFoto").value = "";
+        }
+
+        async function salvarEdicaoProduto() {
+            const data = {
+                nome: editProdNome.value,
+                descricao: editProdDesc.value || null,
+                preco: parseFloat(editProdPreco.value),
+                estoque: parseInt(editProdEstoque.value),
+                categoria: { id: Number(editProdCategoria.value) },
+                fabricante: editProdFabricante.value || null,
+                potenciaCV: editProdPotenciaCV.value ? parseInt(editProdPotenciaCV.value) : null,
+                anoFabricacao: editProdAnoFabricacao.value ? parseInt(editProdAnoFabricacao.value) : null,
+                pesoKG: editProdPesoKG.value ? parseFloat(editProdPesoKG.value) : null,
+                motor: editProdMotor.value || null,
+                transmissao: editProdTransmissao.value || null,
+                marchas: editProdMarchas.value || null,
+                combustivel: editProdCombustivel.value || null,
+                eixos: editProdEixos.value ? parseInt(editProdEixos.value) : null,
+                largura: editProdLargura.value ? parseFloat(editProdLargura.value) : null,
+                altura: editProdAltura.value ? parseFloat(editProdAltura.value) : null,
+                comprimento: editProdComprimento.value ? parseFloat(editProdComprimento.value) : null
+            };
+
+            await fetch(API + "/produtos/" + produtoEditandoID, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            // Se uma foto foi selecionada, fazer upload
+            const fotoInput = document.getElementById("editProdFoto");
+            if (fotoInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append("foto", fotoInput.files[0]);
+
+                await fetch(API + "/produtos/" + produtoEditandoID + "/upload-foto", {
+                    method: "POST",
+                    body: formData
+                });
+            }
+
+            fecharModalProduto();
+            listarProdutos();
+        }
+
+        function carregarCategoriasNoSelect() {
+            fetch(API + "/categorias")
+                .then(res => res.json())
+                .then(lista => {
+                    prodCategoria.innerHTML = "";
+                    lista.forEach(c => {
+                        prodCategoria.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                    });
+                });
+        }
+
+        // ================================
+        // USUÁRIOS
+        // ================================
+        function criarUsuario() {
+            const data = {
+                nome: userNome.value,
+                email: userEmail.value,
+                senha: userSenha.value
+            };
+
+            fetch(API + "/usuarios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(() => {
+                    userNome.value = "";
+                    userEmail.value = "";
+                    userSenha.value = "";
+                    listarUsuarios();
+                })
+                .catch(err => {
+                    userMsg.textContent = "Erro ao cadastrar usuário!";
+                    console.error(err);
+                });
+        }
+
+        function listarUsuarios() {
+            fetch(API + "/usuarios")
+                .then(res => res.json())
+                .then(lista => {
+                    listaUsuarios.innerHTML = "";
+                    lista.forEach(u => {
+                        const fotoUrl = u.fotoPerfil ? `${API}/usuarios/${u.id}/foto` : 'https://via.placeholder.com/50';
+                        listaUsuarios.innerHTML += `
+            <tr>
+                <td><img src="${fotoUrl}" class="user-photo" onerror="this.src='https://via.placeholder.com/50'"></td>
+                <td>${u.id}</td>
+                <td>${u.nome}</td>
+                <td>${u.email}</td>
+                <td>
+                    <button class="btn-warning action" onclick="abrirModalUsuario(${u.id})">Editar</button>
+                    <button class="btn-danger action" onclick="excluirUsuario(${u.id})">Excluir</button>
+                </td>
+            </tr>`;
+                    });
+                });
+        }
+
+        function abrirModalUsuario(id) {
+            usuarioEditandoID = id;
+
+            fetch(API + "/usuarios/" + id)
+                .then(res => res.json())
+                .then(u => {
+                    editUserNome.value = u.nome;
+                    editUserEmail.value = u.email;
+                    editUserSenha.value = "";
+
+                    if (u.fotoPerfil) {
+                        editUserFotoPreview.src = `${API}/usuarios/${u.id}/foto`;
+                        editUserFotoPreview.style.display = "block";
+                    } else {
+                        editUserFotoPreview.style.display = "none";
+                    }
+
+                    modalUsuario.style.display = "flex";
+                });
+        }
+
+        function fecharModalUsuario() {
+            modalUsuario.style.display = "none";
+            editUserFoto.value = "";
+        }
+
+        async function salvarEdicaoUsuario() {
+            const data = {
+                nome: editUserNome.value,
+                email: editUserEmail.value
+            };
+
+            if (editUserSenha.value) {
+                data.senha = editUserSenha.value;
+            }
+
+            await fetch(API + "/usuarios/" + usuarioEditandoID, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const fotoInput = document.getElementById("editUserFoto");
+            if (fotoInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append("foto", fotoInput.files[0]);
+
+                await fetch(API + "/usuarios/" + usuarioEditandoID + "/upload-foto", {
+                    method: "POST",
+                    body: formData
+                });
+            }
+
             fecharModalUsuario();
             listarUsuarios();
         }
-    });
-}
 
-function excluirUsuario(id) {
-    if (confirm("Excluir usuário?"))
-        fetch(API + "/usuarios/" + id, { method: "DELETE" })
-            .then(() => listarUsuarios());
-}
+        function excluirUsuario(id) {
+            if (!confirm("Deseja excluir este usuário?")) return;
 
-function fecharModalUsuario() {
-    modalUsuario.style.display = "none";
-}
+            fetch(API + "/usuarios/" + id, { method: "DELETE" })
+                .then(() => listarUsuarios());
+        }
 
-// ================================
-// Iniciar carregando tudo
-// ================================
-listarCategorias();
-listarProdutos();
-listarUsuarios();
-carregarCategoriasNoSelect();
+        // ================================
+        // Ao abrir o dashboard
+        // ================================
+        listarCategorias();
+        listarProdutos();
+        listarUsuarios();
+        carregarCategoriasNoSelect();
 
-</script>
+    </script>
 
-    </body>
+</body>
+
 </html>
